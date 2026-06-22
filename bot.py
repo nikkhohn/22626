@@ -3,7 +3,7 @@ import os
 import re
 import aiohttp
 from collections import deque
-from telethon import TelegramClient, events
+from telethon import TelegramClient, events, functions
 from telethon.tl.types import MessageMediaPhoto
 from dotenv import load_dotenv
 from aiohttp import web
@@ -171,10 +171,22 @@ async def process_job(job: dict):
 
     print(f"[Step 3] Video received: msg_id={bot2_video_msg.id}")
 
-    # Step 4: Send to Bot3 (copy — works with private channels)
+    # Step 4: Send to Bot3
     print("[Step 4] Sending video to Bot3...")
     bot3_entity = await client.get_entity(BOT3_USERNAME)
-    await client.send_message(bot3_entity, file=bot2_video_msg.media)
+    # Try 1: forward with no quote (hides source)
+    try:
+        await client(functions.messages.ForwardMessagesRequest(
+            from_peer=BOT2_CHANNEL_ID,
+            id=[bot2_video_msg.id],
+            to_peer=bot3_entity,
+            drop_author=True,
+            noforwards=False,
+        ))
+        print("[Step 4] Forward successful.")
+    except Exception as e:
+        print(f"[Step 4] Forward failed: {e}, trying send_file...")
+        await client.send_file(bot3_entity, bot2_video_msg.media)
 
     # Step 5: Wait for Bot3 stream URL
     print("[Step 5] Waiting for Bot3 stream URL...")
