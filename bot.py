@@ -171,10 +171,10 @@ async def process_job(job: dict):
 
     print(f"[Step 3] Video received: msg_id={bot2_video_msg.id}")
 
-    # Step 4: Forward to Bot3
-    print("[Step 4] Forwarding to Bot3...")
+    # Step 4: Send to Bot3 (copy — works with private channels)
+    print("[Step 4] Sending video to Bot3...")
     bot3_entity = await client.get_entity(BOT3_USERNAME)
-    await client.forward_messages(bot3_entity, bot2_video_msg)
+    await client.send_message(bot3_entity, file=bot2_video_msg.media)
 
     # Step 5: Wait for Bot3 stream URL
     print("[Step 5] Waiting for Bot3 stream URL...")
