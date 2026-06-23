@@ -381,6 +381,23 @@ async def main():
         current_video_media = media
         current_video_event.set()
 
+    # Health check server — Render ke liye port binding zaroori hai
+    from aiohttp import web
+
+    async def health(request):
+        return web.Response(text="OK")
+
+    app = web.Application()
+    app.router.add_get("/", health)
+    app.router.add_get("/health", health)
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.environ.get("PORT", 8000))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    logger.info(f"Health check server started on port {port}")
+
     await bot.run_until_disconnected()
 
 if __name__ == "__main__":
