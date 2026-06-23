@@ -261,6 +261,11 @@ async def main():
     # Queue worker start karo
     asyncio.create_task(queue_worker(bot))
 
+    # ── Debug — saare messages log karo ──────────────────────────────────────
+    @bot.on(events.NewMessage())
+    async def debug_all(event):
+        logger.info(f"MSG from {event.sender_id} | private={event.is_private} | text={repr((event.text or '')[:50])}")
+
     # ── Handlers ──────────────────────────────────────────────────────────────
     @bot.on(events.NewMessage(pattern="/start"))
     async def start(event):
