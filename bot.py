@@ -253,8 +253,9 @@ async def main():
     global current_video_media
 
     # Session string se client banao — file system ki zaroorat nahi
+    # User session se connect karo (bot dusre bot ko message nahi kar sakta)
     bot = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
-    await bot.start(bot_token=BOT_TOKEN)
+    await bot.start()  # User account se — phone/OTP nahi maangega (session string se)
     logger.info("🚀 PagalBhabhi Bot started!")
 
     # Queue worker start karo
