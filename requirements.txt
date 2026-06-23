@@ -1,4 +1,4 @@
-telethon
-aiohttp
-aiofiles
-python-dotenv
+telethon==1.36.0
+firebase-admin==6.4.0
+aiohttp==3.9.3
+python-dotenv==1.0.0
